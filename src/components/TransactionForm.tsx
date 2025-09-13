@@ -45,7 +45,7 @@ export function TransactionForm({ categories, initialTransaction }: TransactionF
   const isEditing = !!initialTransaction;
   const action = isEditing ? updateTransaction : addTransaction;
 
-  const initialState = { message: null, errors: {}, success: false }
+  const initialState = { message: "", errors: {} }
   const [state, formAction] = useFormState(action, initialState)
   const formRef = useRef<HTMLFormElement>(null)
   const [date, setDate] = useState<Date | undefined>(

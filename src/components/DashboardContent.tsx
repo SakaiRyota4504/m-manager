@@ -18,6 +18,7 @@ type CategorySummary = {
 }
 
 type RecentTransaction = {
+  id: string
   amount: number
   category_id: string | null
   description: string | null

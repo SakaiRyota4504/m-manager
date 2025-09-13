@@ -31,7 +31,7 @@ interface FixedCostManagerProps {
 }
 
 const initialState = {
-  message: null,
+  message: "",
   errors: {},
   success: false,
 }
@@ -56,7 +56,7 @@ export function FixedCostManager({ fixedCosts, categories }: FixedCostManagerPro
     addState.success = false // Reset success state to prevent re-triggering toast
   } else if (addState.message && !addState.errors) {
     toast.error(addState.message)
-    addState.message = null // Reset message state
+    addState.message = "" // Reset message state
   }
 
   // Handle toast messages for edit operation
@@ -66,7 +66,7 @@ export function FixedCostManager({ fixedCosts, categories }: FixedCostManagerPro
     setEditingFixedCost(null) // Exit edit mode
   } else if (editState.message && !editState.errors) {
     toast.error(editState.message)
-    editState.message = null // Reset message state
+    editState.message = "" // Reset message state
   }
 
   const handleDelete = async (id: string) => {

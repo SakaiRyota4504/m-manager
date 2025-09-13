@@ -37,7 +37,7 @@ function SubmitButton() {
 }
 
 export function CategoryManager({ initialCategories }: CategoryManagerProps) {
-  const [state, formAction] = useFormState(addCategory, { error: undefined, success: undefined })
+  const [state, formAction] = useFormState(addCategory, { success: false })
   const formRef = useRef<HTMLFormElement>(null)
   const [categories, setCategories] = useState(initialCategories) // Manage categories locally
 
