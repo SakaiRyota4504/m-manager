@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { HomeIcon } from 'lucide-react'
+import { logout } from '@/lib/actions/auth'
 
 export function Header() {
   return (
@@ -19,7 +20,9 @@ export function Header() {
             m-manager
           </Link>
         </div>
-        {/* 必要に応じて他のナビゲーションアイテムやユーザーメニューを追加 */}
+        <form action={logout}>
+          <Button variant="outline">Logout</Button>
+        </form>
       </div>
     </header>
   )
