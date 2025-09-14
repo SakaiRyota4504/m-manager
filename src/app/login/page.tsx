@@ -1,3 +1,6 @@
+'use client';
+
+import { useFormState } from 'react-dom';
 import { login } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,12 +13,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
 
 export default function LoginPage() {
+  const initialState = { error: '' };
+  const [state, dispatch] = useFormState(login, initialState);
+
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <form action={login}>
+      <form action={dispatch}>
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle className="text-2xl">Login</CardTitle>
@@ -32,6 +37,11 @@ export default function LoginPage() {
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" name="password" required />
             </div>
+            {state?.error && (
+              <p aria-live="polite" className="text-red-500 text-sm">
+                {state.error}
+              </p>
+            )}
           </CardContent>
           <CardFooter>
             <Button className="w-full">Sign in</Button>
