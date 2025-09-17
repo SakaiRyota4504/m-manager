@@ -6,8 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function Home() {
   const supabase = createClient();
-  const currentMonth = new Date().getMonth() + 1; // 1-12
-  const currentYear = new Date().getFullYear();
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+  const currentMonth = today.getMonth() + 1; // 1-12
+  const currentYear = today.getFullYear();
 
   const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
   const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
@@ -16,7 +18,7 @@ export default async function Home() {
   const lastDayOfCurrentMonth = new Date(currentYear, currentMonth, 0).toISOString().split('T')[0];
 
   // Fetch data in parallel
-  const [categoriesResult, transactionsResult, budgetsResult] = await Promise.all([
+  const [categoriesResult, transactionsResult, budgetsResult, schedulesResult] = await Promise.all([
     supabase.from("categories").select("id, name").order("order_index", { ascending: true }).order("name", { ascending: true }),
     supabase
       .from("transactions")
@@ -29,16 +31,18 @@ export default async function Home() {
       .from("budgets")
       .select("amount, category_id")
       .eq("year_month", lastDayOfCurrentMonth),
+    supabase.from("schedules").select("id, title, date").eq("date", todayStr),
   ]);
 
-  if (categoriesResult.error || transactionsResult.error || budgetsResult.error) {
-    console.error("Dashboard data fetch error:", categoriesResult.error || transactionsResult.error || budgetsResult.error);
+  if (categoriesResult.error || transactionsResult.error || budgetsResult.error || schedulesResult.error) {
+    console.error("Dashboard data fetch error:", categoriesResult.error || transactionsResult.error || budgetsResult.error || schedulesResult.error);
     return <div className="p-4 text-red-500">Error loading dashboard data.</div>;
   }
 
   const categories = categoriesResult.data || [];
   const transactions = transactionsResult.data || [];
   const budgets = budgetsResult.data || [];
+  const schedules = schedulesResult.data || [];
 
   // Calculate actual spending per category
   const actuals: { [categoryId: string]: number } = {};
@@ -86,6 +90,12 @@ export default async function Home() {
         <Button asChild variant="secondary">
           <Link href="/fixed-costs">固定費管理</Link>
         </Button>
+        <Button asChild variant="secondary">
+          <Link href="/calendar">カレンダー</Link>
+        </Button>
+        <Button asChild variant="secondary">
+          <Link href="/holidays">休日設定</Link>
+        </Button>
       </nav>
 
       <DashboardContent
@@ -93,6 +103,7 @@ export default async function Home() {
         currentYear={currentYear}
         categorySummary={categorySummary}
         recentTransactions={transactions}
+        todaySchedules={schedules}
       />
     </main>
   );
